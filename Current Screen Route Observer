@@ -1,0 +1,43 @@
+import 'package:flutter/material.dart';
+import 'package:garibook/app/application.dart';
+
+class GaribookRouteObserver extends NavigatorObserver {
+  Route? currentRoute;
+
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    if (route is PageRoute) {   // ⬅️ ignore bottom sheet/dialog routes
+      currentRoute = route;
+      currentScreen = route.settings.name ?? 'Home';
+      print('Pushed PAGE route: ${currentScreen}');
+    } else {
+      print('Pushed NON-PAGE route (ignored): $route');
+    }
+  }
+
+  @override
+  void didPop(Route route, Route? previousRoute) {
+    if (previousRoute is PageRoute) {
+      currentRoute = previousRoute;
+      currentScreen = previousRoute.settings.name ?? 'Home';
+      print('Popped to PAGE route: ${currentScreen}');
+    } else {
+      print('Popped NON-PAGE route, ignoring…');
+    }
+  }
+
+  Route? get activeRoute => currentRoute;
+}
+
+
+
+
+--------------------------------##############----------------------------------
+
+// global variables
+final GaribookRouteObserver myRouteObserver = GaribookRouteObserver();
+String currentScreen = '';
+
+
+// MaterialApp root widget
+navigatorObservers: [myRouteObserver],
